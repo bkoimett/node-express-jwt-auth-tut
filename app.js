@@ -7,6 +7,7 @@ const app = express();
 
 // middleware
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // view engine
