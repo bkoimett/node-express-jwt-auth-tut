@@ -18,7 +18,7 @@ const signup_post = (req, res) => {
   res.send("successful signup");
 };
 
-modules.export = {
+module.exports = {
     signup_get,
     signup_post,
     login_get,
