@@ -17,7 +17,7 @@ mongoose
   .connect(dbURI) // no options needed in Mongoose 6+
   .then(() => app.listen(3000, () => console.log("✅ Server running on 3000")))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
-
+ 
 
 // routes
 app.get("/", (req, res) => res.render("home"));
