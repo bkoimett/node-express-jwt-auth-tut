@@ -1,0 +1,24 @@
+const express = require("express");
+const mongoose = require("mongoose");
+
+const app = express();
+
+// middleware
+app.use(express.static("public"));
+
+// view engine
+app.set("view engine", "ejs");
+
+// database connection
+const dbURI =
+  "mongodb+srv://koimettb:1738@nodejstuts.rmg3aqa.mongodb.net/node-tuts?retryWrites=true&w=majority&appName=nodejstuts";
+
+mongoose
+  .connect(dbURI) // no options needed in Mongoose 6+
+  .then(() => app.listen(3000, () => console.log("✅ Server running on 3000")))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+
+// routes
+app.get("/", (req, res) => res.render("home"));
+app.get("/smoothies", (req, res) => res.render("smoothies"));
