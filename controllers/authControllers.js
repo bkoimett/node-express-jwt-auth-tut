@@ -10,17 +10,23 @@ const signup_get = (req, res) => {
 
 // POST login form
 const login_post = (req, res) => {
-  res.send('successful login');
+  const { email, password } = req.body;
+
+  console.log(`email: ${email} password: ${password}`);
+  res.send("successful login");
 };
 
 // POST signup form
 const signup_post = (req, res) => {
+  const { email, password } = req.body;
+
+  console.log(`email: ${email} password: ${password}`);
   res.send("successful signup");
 };
 
 module.exports = {
-    signup_get,
-    signup_post,
-    login_get,
-    login_post,
-}
+  signup_get,
+  signup_post,
+  login_get,
+  login_post,
+};
