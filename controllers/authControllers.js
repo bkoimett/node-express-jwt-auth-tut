@@ -28,7 +28,7 @@ const signup_post = async (req, res) => {
   }
   catch (err) {
     console.log(err);
-    res.status(401).send('error, user not created')
+    res.status(400).send('error, user not created')
   }
 };
 
