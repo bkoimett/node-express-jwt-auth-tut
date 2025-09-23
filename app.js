@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
-const { requireAuth } = require('./middleware/authMiddleware');
+const { requireAuth, checkUser } = require('./middleware/authMiddleware');
+
 
 const authRoutes = require('./routes/authRoutes');
 
@@ -27,6 +28,7 @@ mongoose
  
 
 // routes
+app.get(checkUser);
 app.get("/", (req, res) => res.render("home"));
 app.get("/smoothies", requireAuth,(req, res) => res.render("smoothies"));
 app.use(authRoutes);
