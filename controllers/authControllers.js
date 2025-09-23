@@ -1,12 +1,22 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 
-// handle errors - error function
+// handle errors
 const handleErrors = (err) => {
   console.log(err.message, err.code);
   let errors = { email: "", password: "" };
 
-  // duplicate error code
+  // incorrect email
+  if (err.message === "incorrect email") {
+    errors.email = "That email is not registered";
+  }
+
+  // incorrect password
+  if (err.message === "incorrect password") {
+    errors.password = "That password is incorrect";
+  }
+
+  // duplicate email error
   if (err.code === 11000) {
     errors.email = "that email is already registered";
     return errors;
@@ -14,7 +24,10 @@ const handleErrors = (err) => {
 
   // validation errors
   if (err.message.includes("user validation failed")) {
+    // console.log(err);
     Object.values(err.errors).forEach(({ properties }) => {
+      // console.log(val);
+      // console.log(properties);
       errors[properties.path] = properties.message;
     });
   }
@@ -22,38 +35,24 @@ const handleErrors = (err) => {
   return errors;
 };
 
-// create jwt function
+// create json web token
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-  return jwt.sign({ id }, "anakuradar", {
+  return jwt.sign({ id }, "net ninja secret", {
     expiresIn: maxAge,
   });
 };
 
-// GET login form
-const login_get = (req, res) => {
-  res.render("login", { title: "Login", error: null });
+// controller actions
+module.exports.signup_get = (req, res) => {
+  res.render("signup");
 };
 
-// GET signup form
-const signup_get = (req, res) => {
-  res.render("signup", { title: "Sign Up", error: null });
+module.exports.login_get = (req, res) => {
+  res.render("login");
 };
 
-// POST login form
-const login_post = async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.login( email, password );
-    res.status(200).json({ user: user._id });
-  } catch (err) {
-    res.status(400).json({});
-  }
-};
-
-// POST signup form
-const signup_post = async (req, res) => {
+module.exports.signup_post = async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -67,9 +66,16 @@ const signup_post = async (req, res) => {
   }
 };
 
-module.exports = {
-  signup_get,
-  signup_post,
-  login_get,
-  login_post,
+module.exports.login_post = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.login(email, password);
+    const token = createToken(user._id);
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 });
+    res.status(200).json({ user: user._id });
+  } catch (err) {
+    const errors = handleErrors(err);
+    res.status(400).json({ errors });
+  }
 };
